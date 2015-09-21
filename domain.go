@@ -3,9 +3,11 @@ package dnspod
 import (
 	"errors"
 	"net/url"
-	"github.com/h2object/rpc"
+
 	"github.com/h2object/h2object/util"
+	"github.com/h2object/rpc"
 )
+
 // "domain": {
 //         "id": "6",
 //         "name": "dnspod.com",
@@ -28,32 +30,27 @@ import (
 //         "owner": "yizero@qq.com"
 //     }
 
-type DomainInfo struct{
-	ID string `json:"id"`
-	Name string `json:"name"`
-	PunyCode string `json:"punycode"`
-	Grade string `json:"grade"`
+type DomainInfo struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	PunyCode   string `json:"punycode"`
+	Grade      string `json:"grade"`
 	GradeTitle string `json:"grade_title"`
-	Status string `json:"status"`
-	ExtStatus string `json:"ext_status"`
-	Records string `json:"records"`
-	GroupID string `json:"group_id"`
-	IsMark string `json:"is_mark"`
-	Remark string `json:"remark"`
-	IsVIP string `json:"is_vip"`
-	UserID string `json:"user_id"`
-	Owner string `json:"owner"`
-	TTL string `json:"ttl"`
+	Status     string `json:"status"`
+	ExtStatus  string `json:"ext_status"`
+	Records    string `json:"records"`
+	GroupID    string `json:"group_id"`
+	IsMark     string `json:"is_mark"`
+	Remark     bool   `json:"remark"`
+	IsVIP      string `json:"is_vip"`
+	UserID     string `json:"user_id"`
+	Owner      string `json:"owner"`
+	TTL        string `json:"ttl"`
 }
 
 func (client *DNSPodClient) GetDomainInfo(domain string, info *DomainInfo) error {
-	t, err := client.token(client.email, client.password)
-	if err != nil {
-		return err
-	}
-
 	data := url.Values{}
-	data.Set("user_token", t)
+	data.Set("login_token", client.loginToken)
 	data.Set("domain", domain)
 	data.Set("format", "json")
 
@@ -62,7 +59,7 @@ func (client *DNSPodClient) GetDomainInfo(domain string, info *DomainInfo) error
 	if err := client.conn.PostForm(nil, u, data, &ret); err != nil {
 		return err
 	}
-	
+
 	var status Status
 	if err := util.Convert(ret["status"], &status); err != nil {
 		return err

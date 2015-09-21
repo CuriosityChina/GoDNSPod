@@ -3,8 +3,9 @@ package dnspod
 import (
 	"errors"
 	"net/url"
-	"github.com/h2object/rpc"
+
 	"github.com/h2object/h2object/util"
+	"github.com/h2object/rpc"
 )
 
 // {
@@ -22,29 +23,23 @@ import (
 //              "updated_on": "2014-06-05 09:47:40",
 //              "hold": "hold"
 //          }
-type RecordInfo struct{
-	ID string `json:"id"`
-	Name string `json:"name"`
-	Line string `json:"line"`
-	Type string `json:"type"`
-	TTL string `json:"ttl"`
-	Value string `json:"value"`
-	MX string `json:"mx"`
-	Enabled string `json:"enabled"`
-	Status string `json:"status"`
+type RecordInfo struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Line     string `json:"line"`
+	Type     string `json:"type"`
+	TTL      string `json:"ttl"`
+	Value    string `json:"value"`
+	MX       string `json:"mx"`
+	Enabled  string `json:"enabled"`
+	Status   string `json:"status"`
 	UpdateAt string `json:"updated_on"`
-	Hold string `json:"hold"`
+	Hold     string `json:"hold"`
 }
 
-
 func (client *DNSPodClient) AddRecord(domainID string, info *RecordInfo) error {
-	t, err := client.token(client.email, client.password)
-	if err != nil {
-		return err
-	}
-
 	data := url.Values{}
-	data.Set("user_token", t)
+	data.Set("login_token", client.loginToken)
 	data.Set("domain_id", domainID)
 	data.Set("sub_domain", info.Name)
 	data.Set("record_type", info.Type)
@@ -63,7 +58,7 @@ func (client *DNSPodClient) AddRecord(domainID string, info *RecordInfo) error {
 	if err := client.conn.PostForm(nil, u, data, &ret); err != nil {
 		return err
 	}
-	
+
 	var status Status
 	if err := util.Convert(ret["status"], &status); err != nil {
 		return err
@@ -80,13 +75,8 @@ func (client *DNSPodClient) AddRecord(domainID string, info *RecordInfo) error {
 }
 
 func (client *DNSPodClient) ModRecord(domainID string, info *RecordInfo) error {
-	t, err := client.token(client.email, client.password)
-	if err != nil {
-		return err
-	}
-
 	data := url.Values{}
-	data.Set("user_token", t)
+	data.Set("login_token", client.loginToken)
 	data.Set("domain_id", domainID)
 	data.Set("sub_domain", info.Name)
 	data.Set("record_type", info.Type)
@@ -105,7 +95,7 @@ func (client *DNSPodClient) ModRecord(domainID string, info *RecordInfo) error {
 	if err := client.conn.PostForm(nil, u, data, &ret); err != nil {
 		return err
 	}
-	
+
 	var status Status
 	if err := util.Convert(ret["status"], &status); err != nil {
 		return err
@@ -122,13 +112,8 @@ func (client *DNSPodClient) ModRecord(domainID string, info *RecordInfo) error {
 }
 
 func (client *DNSPodClient) DelRecord(domainID string, recordID string) error {
-	t, err := client.token(client.email, client.password)
-	if err != nil {
-		return err
-	}
-
 	data := url.Values{}
-	data.Set("user_token", t)
+	data.Set("login_token", client.loginToken)
 	data.Set("domain_id", domainID)
 	data.Set("record_id", recordID)
 	data.Set("format", "json")
@@ -138,7 +123,7 @@ func (client *DNSPodClient) DelRecord(domainID string, recordID string) error {
 	if err := client.conn.PostForm(nil, u, data, &ret); err != nil {
 		return err
 	}
-	
+
 	var status Status
 	if err := util.Convert(ret["status"], &status); err != nil {
 		return err
@@ -147,6 +132,5 @@ func (client *DNSPodClient) DelRecord(domainID string, recordID string) error {
 	if status.Code != "1" {
 		return errors.New(status.Message)
 	}
-	return nil	
+	return nil
 }
-
