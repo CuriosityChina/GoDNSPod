@@ -9,16 +9,10 @@ DNSPod API client library for golang based on DNSPod.com API service
 ## Quick Start
 
 ````
-import "github.com/h2object/GoDNSPod"
+import "github.com/lowstz/GoDNSPod"
 
-client := NewDNSPodClient("api.dnspod.com", nil)
-
-// cache token
-// client := NewDNSPodClient("api.dnspod.com", cache)
-
-if err := client.Authorize(login_email, login_pass); err != nil {
-	// YOUR account wrong
-}
+apiToken := "ID,API_TOKEN"
+client := dnspod.NewDNSPodClient("dnsapi.com", apiToken)
 
 // domain info variable
 var domain dnspod.DomainInfo
