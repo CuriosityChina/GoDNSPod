@@ -1,19 +1,8 @@
 package dnspod
 
-import (
-	"time"
+import "github.com/h2object/rpc"
 
-	"github.com/h2object/rpc"
-	// "log"
-)
-
-type Cache interface {
-	Set(string, interface{}, time.Duration)
-	Add(string, interface{}, time.Duration) error
-	Get(string) (interface{}, bool)
-	Delete(string)
-	DeleteExpired()
-}
+// "log"
 
 type Status struct {
 	Code     string `json:"code"`
