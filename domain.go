@@ -41,7 +41,7 @@ type DomainInfo struct {
 	Records    string `json:"records"`
 	GroupID    string `json:"group_id"`
 	IsMark     string `json:"is_mark"`
-	Remark     bool   `json:"remark"`
+	Remark     string `json:"remark"`
 	IsVIP      string `json:"is_vip"`
 	UserID     string `json:"user_id"`
 	Owner      string `json:"owner"`
